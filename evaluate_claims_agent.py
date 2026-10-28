@@ -47,3 +47,4 @@ def evaluate_retrieval(retriever: PolicyRetriever, k: int = 3) -> dict[str, Any]
         "cases": case_results,
     }
 
+

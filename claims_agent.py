@@ -106,6 +106,9 @@ def normalize_claims(frame: pd.DataFrame) -> pd.DataFrame:
         data[col] = data[col].fillna("").astype(str).str.strip()
     for col in ["incurred_loss", "reserve", "days_open"]:
         data[col] = pd.to_numeric(data[col], errors="coerce")
+    data[["incurred_loss", "reserve", "days_open"]] = data[
+        ["incurred_loss", "reserve", "days_open"]
+    ].replace([np.inf, -np.inf], np.nan)
     data = data.dropna(subset=["incurred_loss", "reserve", "days_open"])
     data = data.loc[(data["incurred_loss"] >= 0) & (data["reserve"] >= 0) & (data["days_open"] >= 0)]
     if data.empty:
@@ -125,9 +128,10 @@ class PolicyRetriever:
         scores = cosine_similarity(self.vectorizer.transform([query]), self.matrix).ravel()
         order = np.argsort(scores)[::-1]
         hits = []
+        requested_lob = (line_of_business or "").strip().casefold()
         for idx in order:
             doc = self.documents[int(idx)]
-            if line_of_business and line_of_business != "All" and doc.line_of_business not in (line_of_business, "All"):
+            if requested_lob and requested_lob != "all" and doc.line_of_business.casefold() not in (requested_lob, "all"):
                 continue
             if scores[idx] <= 0:
                 continue
@@ -193,7 +197,7 @@ class ClaimsResearchAgent:
         api_key = os.getenv("OPENAI_API_KEY", "").strip()
         if not api_key:
             raise RuntimeError("OPENAI_API_KEY is not configured")
-        base_url = os.getenv("OPENAI_BASE_URL", "https://api.openai.com/v1").rstrip("/")
+        base_url = (os.getenv("OPENAI_BASE_URL", "").strip() or "https://api.openai.com/v1").rstrip("/")
         model = os.getenv("OPENAI_MODEL", "gpt-6-luna")
         tools = [
             {"type": "function", "name": "search_policy_documents", "description": "Search the synthetic policy and handling document library. Cite returned source IDs.", "parameters": {"type": "object", "properties": {"query": {"type": "string"}, "line_of_business": {"type": "string"}}, "required": ["query"], "additionalProperties": False}, "strict": False},
@@ -289,4 +293,5 @@ class ClaimsResearchAgent:
         if enabled and os.getenv("OPENAI_API_KEY", "").strip():
             return self._llm_answer(question), "LLM with read-only tools"
         return self._local_answer(question), "Local TF-IDF research mode"
+
 

@@ -9,7 +9,7 @@ from claims_agent import CLAIM_COLUMNS, ClaimsResearchAgent, make_demo_claims, n
 from evaluate_claims_agent import evaluate_retrieval
 
 
-st.set_page_config(page_title="Claims Research Agent", page_icon="🔎", layout="wide")
+st.set_page_config(page_title="Claims Research Agent", page_icon="ðŸ”Ž", layout="wide")
 
 st.title("Claims Research Agent")
 st.caption("Search synthetic policy guidance, inspect claim records, and compare similar claims with cited research leads.")
@@ -42,7 +42,7 @@ def get_demo_claims() -> pd.DataFrame:
 
 
 with st.sidebar:
-    st.header("1 · Choose claim data")
+    st.header("1 Â· Choose claim data")
     source = st.radio("Data source", ["Synthetic demo portfolio", "Upload a CSV"])
     upload = st.file_uploader("Claim records (CSV)", type=["csv"], disabled=source != "Upload a CSV")
 
@@ -55,7 +55,7 @@ with st.sidebar:
     else:
         try:
             raw = pd.read_csv(upload)
-            st.header("2 · Map claim fields")
+            st.header("2 Â· Map claim fields")
             mapping: dict[str, str] = {}
             for target in CLAIM_COLUMNS:
                 mapping[target] = st.selectbox(
@@ -69,15 +69,17 @@ with st.sidebar:
             claims = None
 
     st.divider()
-    st.header("3 · LLM mode")
+    st.header("3 Â· LLM mode")
     llm_available = bool(os.getenv("OPENAI_API_KEY", "").strip())
     use_llm = st.checkbox("Use configured LLM with read-only tools", value=False, disabled=not llm_available)
     if llm_available:
-        st.caption(f"Configured model: {os.getenv('OPENAI_MODEL', 'gpt-6-luna')}")
+        model = os.getenv("OPENAI_MODEL", "gpt-6-luna").strip() or "gpt-6-luna"
+        st.caption(f"API model: `{model}` (change `OPENAI_MODEL` in `.env`)")
+        st.caption("OpenAI API usage may be billed separately from a ChatGPT subscription.")
     else:
-        st.caption("Local TF-IDF mode is ready. Configure OPENAI_API_KEY to enable optional tool calling.")
+        st.caption("Local TF-IDF mode is ready. Add an OpenAI API key to `.env` to enable optional tool calling.")
     if use_llm:
-        st.warning("The question and selected claim-tool results will be sent to the configured LLM endpoint. Do not use confidential or identifying claim data unless that use is approved.")
+        st.warning("The question and selected claim-tool results will be sent to the configured API endpoint. Use fictional or approved data only.")
 
 
 if claims is not None:
@@ -104,7 +106,7 @@ if claims is not None:
     )
     run = st.button("Research", type="primary")
     if run:
-        with st.spinner("Searching records and policy references…"):
+        with st.spinner("Searching records and policy referencesâ€¦"):
             try:
                 answer, mode = agent.answer(question, use_llm=use_llm)
                 st.caption(f"Mode: {mode}")
@@ -127,4 +129,5 @@ if claims is not None:
 
 st.divider()
 st.caption("The built-in claim records and policy summaries are fictional demonstration data. Uploaded CSV files are analyzed in this app process and are not saved by this project.")
+
 

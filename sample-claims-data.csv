@@ -1,0 +1,10 @@
+claim_id,policy_id,line_of_business,claim_type,status,incurred_loss,reserve,days_open,territory,description
+CLM-10001,POL-201001,Auto,Collision,Open,4200.00,1900.00,42,Urban,Two vehicle collision; repair estimate requested.
+CLM-10002,POL-201002,Home,Water,Pending,8750.00,3300.00,76,Suburban,Kitchen supply line leak; source inspection pending.
+CLM-10003,POL-201003,Home,Wind/Hail,Closed,6100.00,0,118,Coastal,Roof damage reported after a storm.
+CLM-10004,POL-201004,Auto,Liability,Open,15400.00,7200.00,91,Urban,Third party property damage; statements pending.
+CLM-10005,POL-201005,Home,Theft,Closed,2450.00,0,33,Rural,Personal property theft; itemized list received.
+CLM-10006,POL-201006,Auto,Comprehensive,Pending,980.00,410.00,19,Suburban,Windshield damage reported; inspection scheduled.
+CLM-10007,POL-201007,Auto,Collision,Closed,3200.00,0,63,Rural,Single vehicle collision; repair invoice received.
+CLM-10008,POL-201008,Home,Water,Open,0,1200.00,12,Coastal,Water damage reported; cause has not been confirmed.
+

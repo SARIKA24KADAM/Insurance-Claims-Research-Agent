@@ -74,3 +74,4 @@ These queries are a small hand-authored smoke measure. They do not measure answe
 
 For the OpenAI request and function-tool loop, see [official OpenAI function-calling documentation](https://developers.openai.com/api/docs/guides/function-calling).
 
+

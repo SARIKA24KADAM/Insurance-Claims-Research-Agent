@@ -33,7 +33,17 @@ Thumbs.db
 *.pt
 *.pth
 private-data/
+private/
 uploads/
 data/private/
+data/raw/
+data/processed/
+datasets/private/
+*_private.csv
+*_confidential.csv
+*_sensitive.csv
+*.parquet
+*.xlsx
 *.db
+
 
